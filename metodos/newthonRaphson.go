@@ -2,8 +2,6 @@ package metodos
 
 import (
     "metodosNumericos/calculus"
-
-
 )
 
 type NewthonRp struct {
@@ -12,7 +10,7 @@ type NewthonRp struct {
     MaxIter  int 
 }
 
-func (mt *NewthonRp) NewThonRaphson() ([]float64 , error  ){ 
+func (mt *NewthonRp) Calular() ([]float64 , error  ){ 
     
     dx , _ := calculus.Derive(mt.Function) 
     var xi float64  = mt.Number  
@@ -26,6 +24,7 @@ func (mt *NewthonRp) NewThonRaphson() ([]float64 , error  ){
         interations = append(interations , xi)
         
     }
-
     return interations , nil  
 }
+
+
