@@ -1,4 +1,4 @@
-package metodos
+package calculus
 
 import (
     "github.com/Knetic/govaluate"
@@ -8,7 +8,7 @@ import (
 )
 
 // funcion to evalutate the  math expression 
-func evaluate(x float64 , function string ) (float64 , error ) {
+func EvaluateFunction(x float64 , function string ) (float64 , error ) {
     expresion, err := govaluate.NewEvaluableExpressionWithFunctions(function , funcionesMatematicas())
 	
     if err != nil {
@@ -88,4 +88,5 @@ func funcionesMatematicas() map[string]govaluate.ExpressionFunction {
 		},
 	}
 }
+
 

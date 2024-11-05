@@ -17,8 +17,8 @@ func (mt *NewthonRp) Calular() ([]float64 , error  ){
     var interations []float64
 
     for i := 0; i < mt.MaxIter ; i++ {
-        fa , _ := evaluate( mt.Number , mt.Function) 
-        dxfa , _  := evaluate(mt.Number , dx)
+        fa , _ := calculus.EvaluateFunction( mt.Number , mt.Function);
+        dxfa , _ := calculus.EvaluateFunction(mt.Number , dx);
     
         xi = xi - ( fa / dxfa)
         interations = append(interations , xi)
@@ -26,5 +26,4 @@ func (mt *NewthonRp) Calular() ([]float64 , error  ){
     }
     return interations , nil  
 }
-
 

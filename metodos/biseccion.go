@@ -1,8 +1,8 @@
 package metodos
 
 import (
-   "errors"
- //  "fmt" 
+    "errors"
+    "metodosNumericos/calculus"
 )
 
 type Biseccion struct {
@@ -23,8 +23,8 @@ func (mt *Biseccion) Calcular() ([]float64, error ) {
     for i := 0 ; i < mt.MaxIter ; i++{
             
     
-        fa , _  := evaluate( a , mt.Function )
-        fb , _  := evaluate( b , mt.Function )
+        fa , _  := calculus.EvaluateFunction( a , mt.Function );
+        fb , _  := calculus.EvaluateFunction( b , mt.Function );
     
         if fa * fb >= 0 {
             return nil   , errors.New("el intervalo no encierra una raíz, elige otro intervalo"); 

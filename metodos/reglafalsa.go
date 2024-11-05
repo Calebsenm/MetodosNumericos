@@ -1,8 +1,8 @@
 package metodos
 
 import (
-   "errors"
- //  "fmt" 
+    "errors"
+    "metodosNumericos/calculus"
 )
 
 type ReglaFalsa struct {
@@ -22,10 +22,9 @@ func (mt *ReglaFalsa ) Calcular() ([]float64 , error){
 
     for i := 0 ; i < mt.MaxIter ; i++{
              
-        fa , _  := evaluate( a , mt.Function )
-        fb , _  := evaluate( b , mt.Function )
+        fa , _  := calculus.EvaluateFunction( a , mt.Function )
+        fb , _  := calculus.EvaluateFunction( b , mt.Function )
         
-
         if fa * fb > 0 {
             return nil   , errors.New("el intervalo no encierra una raíz, elige otro intervalo"); 
         }
@@ -34,7 +33,7 @@ func (mt *ReglaFalsa ) Calcular() ([]float64 , error){
   
         iterations = append( iterations , xi);
 
-        fxi , _ := evaluate(xi , mt.Function )
+        fxi , _ := calculus.EvaluateFunction(xi , mt.Function )
 
 	    if fa * fxi  < 0 {
 		    b = xi  
