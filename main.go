@@ -1,11 +1,9 @@
-
 package main 
 
 import (
     "fmt"
     "metodosNumericos/metodos"
 )
-
 
 func main(){
     fmt.Println("---------------- Metodos --------------------");
@@ -51,6 +49,7 @@ func main(){
 
 
     }   else if option == 2{
+        
         var num1 float64 
         fmt.Print("ingresa el num1: ");
         fmt.Scan(&num1)
@@ -78,16 +77,13 @@ func main(){
 
 
     }   else if option == 3{
-        var num1 float64 
-        fmt.Print("ingresa el num1: ");
-        fmt.Scan(&num1)
 
-        fmt.Print("ingresa el num2: ");
-        var num2 float64 
-        fmt.Scan(&num2)
+        var num1 float64; 
+        fmt.Print("Ingresa el numero: ");
+        fmt.Scan(&num1);
 
-        fmt.Print("ingresa el numero interaciones: ")
-        var numIter int 
+        fmt.Print("ingresa el numero interaciones: ");
+        var numIter int;
         fmt.Scan(&numIter)
 
         fmt.Print("ingresa la funcion: ");
@@ -102,7 +98,6 @@ func main(){
         if err != nil {
             fmt.Println(err)
         }
-
 
     }   else {
             fmt.Println("Opcion no existe")

@@ -45,3 +45,4 @@ func (mt *Biseccion) Calcular() ([]float64, error ) {
     return iterations  , nil  
 }
 
+
