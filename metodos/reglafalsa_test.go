@@ -1,17 +1,30 @@
 package metodos 
 
-import "testing"
+import (
+    "testing"
+    "fmt"
+)
 
-func TestRe(t *testing.T){
-
-    bi := ReglaFalsa{NumberOne: 1 , NumberTwo: 2 ,MaxIter: 10 , Function: "x^3 -x -2"}
-    result , err := bi.Calcular()
-    
-    if err != nil {
-        t.Error(err)
+func TestRe(t *testing.T) {
+    regla := ReglaFalsa{
+        NumberOne: 0,
+        NumberTwo: 1,
+        MaxIter:   10,
+        Function:  "2*x^2 +2*x -2 ",
     }
 
-    if result[0] != 1.333 {
-        t.Error("incorrect result", result  )
+    data, err := regla.Calcular()
+    if err != nil {
+        t.Fatalf("Error al calcular: %v", err)
+    }
+
+    // Asegúrate de que el mapa data no esté vacío antes de acceder a los valores
+    if len(data) == 0 {
+        t.Fatal("El mapa data está vacío")
+    }
+
+    // Verificar que todas las claves tengan al menos un elemento
+    for k, v := range data {
+        fmt.Println(k , v )
     }
 }

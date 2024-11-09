@@ -3,6 +3,7 @@ package metodos
 import (
     "errors"
     "metodosNumericos/calculus"
+    "fmt"
 )
 
 type Biseccion struct {
@@ -12,18 +13,23 @@ type Biseccion struct {
     Function  string 
 }
 
-func (mt *Biseccion) Calcular() ([]float64, error ) {
+func (mt *Biseccion) Calcular() (map[int][]float64, error ) {
     
     a := mt.NumberOne 
-    b := mt.NumberTwo
-
+    b := mt.NumberTwo 
+    
     var xi float64 
-    var iterations []float64
+    data := make(map[int][]float64)
 
     for i := 0 ; i < mt.MaxIter ; i++{
                 
-        fa , _ := calculus.EvaluateFunction( a , mt.Function );
-        fb , _ := calculus.EvaluateFunction( b , mt.Function );
+        fa , err := calculus.EvaluateFunction( a , mt.Function );
+        if err != nil {
+            fmt.Println(err)
+        }
+
+
+        fb , err := calculus.EvaluateFunction( b , mt.Function );
 
 
         if fa * fb >= 0 {
@@ -31,9 +37,19 @@ func (mt *Biseccion) Calcular() ([]float64, error ) {
         }
 
         xi =  fa + ( fb - fa)  / 2
-        iterations = append( iterations , xi);
-            
-	    if fa * xi < 0 {
+       
+        fxi , err := calculus.EvaluateFunction(xi , mt.Function )
+        if err != nil {
+            fmt.Println("error" , err) 
+        }
+
+        valores := []float64 {
+            a , b , fa , fb , xi , fxi ,
+        }
+
+        data[i] = valores 
+	    
+        if fa * xi < 0 {
 		    b = xi  
         
 		} else {
@@ -42,7 +58,7 @@ func (mt *Biseccion) Calcular() ([]float64, error ) {
 		}
     }
    
-    return iterations  , nil  
+    return data  , nil  
 }
 
 
