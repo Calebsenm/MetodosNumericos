@@ -25,7 +25,7 @@ func Derive(expr string) (string, error) {
 			return "", err
 		}
 		if derivative != "0" {
-			derivatives = append(derivatives, derivative)
+			derivatives = append(derivatives, simplifyTerm(derivative))
 		}
 	}
 
@@ -256,4 +256,33 @@ func simplify(derivatives []string) string {
 	}
 
 	return result
+}
+
+// Simplifica términos como '2*x^1' a '2*x' y '3*1' a '3'
+func simplifyTerm(term string) string {
+	// Simplifica 'x^1' a 'x'
+	for strings.Contains(term, "x^1") {
+		term = strings.Replace(term, "x^1", "x", -1)
+	}
+	// Simplifica '*1' al final
+	if strings.HasSuffix(term, "*1") {
+		term = term[:len(term)-2]
+	}
+	// Simplifica '^1' al final
+	if strings.HasSuffix(term, "^1") {
+		term = term[:len(term)-2]
+	}
+	// Simplifica 'x^0' a '1'
+	for strings.Contains(term, "x^0") {
+		term = strings.Replace(term, "x^0", "1", -1)
+	}
+	// Simplifica '1*x' a 'x'
+	for strings.Contains(term, "1*x") {
+		term = strings.Replace(term, "1*x", "x", -1)
+	}
+	// Simplifica '0*x' a '0'
+	for strings.Contains(term, "0*x") {
+		term = strings.Replace(term, "0*x", "0", -1)
+	}
+	return term
 }

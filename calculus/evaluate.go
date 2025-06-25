@@ -1,32 +1,87 @@
 package calculus
 
 import (
-    "github.com/Knetic/govaluate"
-    "fmt"
-    "math"
- 
+	"fmt"
+	"math"
+	"strings"
+
+	"github.com/Knetic/govaluate"
 )
 
-// funcion to evalutate the  math expression 
-func EvaluateFunction(x float64 , function string ) (float64 , error ) {
-    expresion, err := govaluate.NewEvaluableExpressionWithFunctions(function , funcionesMatematicas())
-	
-    if err != nil {
+// funcion to evalutate the  math expression
+func EvaluateFunction(x float64, function string) (float64, error) {
+	function = insertMultiplication(function)
+	function = convertPowers(function)
+	expresion, err := govaluate.NewEvaluableExpressionWithFunctions(function, funcionesMatematicas())
+
+	if err != nil {
 		return 0, fmt.Errorf("error en la expresión: %v", err)
 	}
-   
-	parameters := make(map[string]interface{}, 8)
-	parameters["x"] = x ;
 
-	result , err := expresion.Evaluate(parameters)
+	parameters := make(map[string]interface{}, 8)
+	parameters["x"] = x
+
+	result, err := expresion.Evaluate(parameters)
 	if err != nil {
 		return 0, fmt.Errorf("error al evaluar la expresión: %v", err)
 	}
 
 	return result.(float64), nil
-}  
+}
 
-// maths functions for govaluate 
+// Convierte 'x^n' en 'pow(x,n)' para que govaluate lo entienda
+func convertPowers(expr string) string {
+	// Reemplaza patrones como 'x^2' o '2^x' por 'pow(x,2)' o 'pow(2,x)'
+	var result strings.Builder
+	for i := 0; i < len(expr); {
+		if i+2 < len(expr) && ((expr[i] == 'x' && expr[i+1] == '^' && (expr[i+2] == 'x' || (expr[i+2] >= '0' && expr[i+2] <= '9'))) || ((expr[i] >= '0' && expr[i] <= '9') && expr[i+1] == '^' && (expr[i+2] == 'x' || (expr[i+2] >= '0' && expr[i+2] <= '9')))) {
+			// Caso 'x^n' o 'n^x'
+			baseStart := i
+			baseEnd := i
+			if expr[i] == 'x' {
+				baseEnd = i + 1
+			} else {
+				for baseEnd < len(expr) && expr[baseEnd] >= '0' && expr[baseEnd] <= '9' {
+					baseEnd++
+				}
+			}
+			base := expr[baseStart:baseEnd]
+			expStart := baseEnd + 1
+			expEnd := expStart
+			if expr[expStart] == 'x' {
+				expEnd = expStart + 1
+			} else {
+				for expEnd < len(expr) && expr[expEnd] >= '0' && expr[expEnd] <= '9' {
+					expEnd++
+				}
+			}
+			exp := expr[expStart:expEnd]
+			result.WriteString("pow(" + base + "," + exp + ")")
+			i = expEnd
+		} else {
+			result.WriteByte(expr[i])
+			i++
+		}
+	}
+	return result.String()
+}
+
+// Inserta '*' entre número y variable, por ejemplo '2x' -> '2*x'
+func insertMultiplication(expr string) string {
+	var result strings.Builder
+	for i := 0; i < len(expr)-1; i++ {
+		result.WriteByte(expr[i])
+		if expr[i] >= '0' && expr[i] <= '9' && expr[i+1] == 'x' {
+			result.WriteByte('*')
+		}
+	}
+	if len(expr) > 0 {
+		result.WriteByte(expr[len(expr)-1])
+	}
+	return result.String()
+}
+
+// maths functions for govaluate
 func funcionesMatematicas() map[string]govaluate.ExpressionFunction {
 	return map[string]govaluate.ExpressionFunction{
 		"sin": func(args ...interface{}) (interface{}, error) {
@@ -88,5 +143,3 @@ func funcionesMatematicas() map[string]govaluate.ExpressionFunction {
 		},
 	}
 }
-
-

@@ -1,67 +1,75 @@
 package metodos
 
 import (
-    "errors"
-    "metodosNumericos/calculus"
-    "fmt"     
+	"errors"
+	"fmt"
+	"metodosNumericos/calculus"
 )
 
 type ReglaFalsa struct {
-    NumberOne float64 
-    NumberTwo float64
-    MaxIter   int 
-    Function  string 
+	NumberOne float64
+	NumberTwo float64
+	MaxIter   int
+	Function  string
 }
 
-func (mt *ReglaFalsa ) Calcular() (map[int][]float64 , error){
- 
-    a := mt.NumberOne 
-    b := mt.NumberTwo 
-    var xi float64 
-    data := make(map[int][]float64) 
+func (mt *ReglaFalsa) Calcular() (map[int][]float64, error) {
 
+	a := mt.NumberOne
+	b := mt.NumberTwo
+	var xi float64
+	data := make(map[int][]float64)
 
-    for i := 1 ; i < mt.MaxIter ; i++{
-             
-        fa , err  := calculus.EvaluateFunction( a , mt.Function )
-        if err != nil {
-            fmt.Println(err)
-        }
+	for i := 1; i < mt.MaxIter; i++ {
 
-        fb , err  := calculus.EvaluateFunction( b , mt.Function )
-        if err != nil {
-            fmt.Println(err)
-        } 
-
-        if fa * fb > 0 {
-            return nil   , errors.New("el intervalo no encierra una raíz, elige otro intervalo"); 
-        }
-
-        xia := a * fb 
-        xib := b * fa 
-        xif := fb - fa
-
-        xi =  (xia  -  xib) / xif  
-        fxi  , err  := calculus.EvaluateFunction(xi , mt.Function)
-        
-        if err != nil {
-            fmt.Println(err)
-        }
-
-        valores := []float64{
-            a , b , fa , fb , xi, fxi, 
-        }  
-        
-        data[i] =  valores 
-
-
-	    if fa * fxi  < 0 {
-		    b = xi  
-        
-		} else {
-			a = xi  
+		fa, err := calculus.EvaluateFunction(a, mt.Function)
+		if err != nil {
+			fmt.Println(err)
 		}
-    }
-   
-    return data , nil    
+
+		fb, err := calculus.EvaluateFunction(b, mt.Function)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if fa == 0 {
+			valores := []float64{a, b, fa, fb, a, fa}
+			data[i] = valores
+			break
+		}
+		if fb == 0 {
+			valores := []float64{a, b, fa, fb, b, fb}
+			data[i] = valores
+			break
+		}
+		if fa*fb > 0 {
+			return nil, errors.New("el intervalo no encierra una raíz, elige otro intervalo")
+		}
+
+		xia := a * fb
+		xib := b * fa
+		xif := fb - fa
+
+		xi = (xia - xib) / xif
+		fxi, err := calculus.EvaluateFunction(xi, mt.Function)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		valores := []float64{
+			a, b, fa, fb, xi, fxi,
+		}
+
+		data[i] = valores
+
+		if fa*fxi < 0 {
+			b = xi
+
+		} else {
+			a = xi
+		}
+	}
+
+	return data, nil
 }

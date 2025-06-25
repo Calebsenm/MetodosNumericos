@@ -1,64 +1,68 @@
 package metodos
 
 import (
-    "errors"
-    "metodosNumericos/calculus"
-    "fmt"
+	"errors"
+	"fmt"
+	"metodosNumericos/calculus"
 )
 
 type Biseccion struct {
-    NumberOne float64 
-    NumberTwo float64
-    MaxIter   int 
-    Function  string 
+	NumberOne float64
+	NumberTwo float64
+	MaxIter   int
+	Function  string
 }
 
-func (mt *Biseccion) Calcular() (map[int][]float64, error ) {
-    
-    a := mt.NumberOne 
-    b := mt.NumberTwo 
-    
-    var xi float64 
-    data := make(map[int][]float64)
+func (mt *Biseccion) Calcular() (map[int][]float64, error) {
 
-    for i := 0 ; i < mt.MaxIter ; i++{
-                
-        fa , err := calculus.EvaluateFunction( a , mt.Function );
-        if err != nil {
-            fmt.Println(err)
-        }
+	a := mt.NumberOne
+	b := mt.NumberTwo
 
+	var xi float64
+	data := make(map[int][]float64)
 
-        fb , err := calculus.EvaluateFunction( b , mt.Function );
+	for i := 0; i < mt.MaxIter; i++ {
 
-
-        if fa * fb >= 0 {
-            return nil   , errors.New("el intervalo no encierra una raíz, elige otro intervalo"); 
-        }
-
-        xi =  fa + ( fb - fa)  / 2
-       
-        fxi , err := calculus.EvaluateFunction(xi , mt.Function )
-        if err != nil {
-            fmt.Println("error" , err) 
-        }
-
-        valores := []float64 {
-            a , b , fa , fb , xi , fxi ,
-        }
-
-        data[i] = valores 
-	    
-        if fa * xi < 0 {
-		    b = xi  
-        
-		} else {
-			a = xi 
-        
+		fa, err := calculus.EvaluateFunction(a, mt.Function)
+		if err != nil {
+			fmt.Println(err)
 		}
-    }
-   
-    return data  , nil  
+
+		fb, err := calculus.EvaluateFunction(b, mt.Function)
+
+		if fa == 0 {
+			valores := []float64{a, b, fa, fb, a, fa}
+			data[i] = valores
+			break
+		}
+		if fb == 0 {
+			valores := []float64{a, b, fa, fb, b, fb}
+			data[i] = valores
+			break
+		}
+		if fa*fb > 0 {
+			return nil, errors.New("el intervalo no encierra una raíz, elige otro intervalo")
+		}
+
+		xi = (a + b) / 2
+
+		fxi, err := calculus.EvaluateFunction(xi, mt.Function)
+		if err != nil {
+			fmt.Println("error", err)
+		}
+
+		valores := []float64{
+			a, b, fa, fb, xi, fxi,
+		}
+
+		data[i] = valores
+
+		if fa*fxi < 0 {
+			b = xi
+		} else {
+			a = xi
+		}
+	}
+
+	return data, nil
 }
-
-
